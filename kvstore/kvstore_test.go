@@ -22,18 +22,18 @@ func TestKVStore_Put(t *testing.T) {
 
 	scenarios := []struct {
 		name   string
-		key    string
+		Key    string
 		val    string
 		expErr error
 	}{
-		{"new key",
-			"new key",
+		{"new Key",
+			"new Key",
 			"new value",
 			nil,
 		},
 		{
-			"old key",
-			"old key",
+			"old Key",
+			"old Key",
 			"old value",
 			nil,
 		},
@@ -41,7 +41,7 @@ func TestKVStore_Put(t *testing.T) {
 
 	for _, scenario := range scenarios {
 		t.Run(scenario.name, func(t *testing.T) {
-			err := store.Put(scenario.key, scenario.val)
+			err := store.Put(scenario.Key, scenario.val)
 			if scenario.expErr != nil {
 				if err == nil {
 					t.Errorf("expected error %v, but got %v instead\n", scenario.expErr, err)
@@ -62,17 +62,17 @@ func TestKVStore_Get(t *testing.T) {
 
 	scenarios := []struct {
 		name   string
-		key    string
+		Key    string
 		expErr error
 		exp    string
 	}{
-		{"new key",
+		{"new Key",
 			"D",
 			ErrKeyNotExist,
 			"",
 		},
 		{
-			"old key",
+			"old Key",
 			"B",
 			nil,
 			"2",
@@ -81,7 +81,7 @@ func TestKVStore_Get(t *testing.T) {
 
 	for _, scenario := range scenarios {
 		t.Run(scenario.name, func(t *testing.T) {
-			actual, err := store.Get(scenario.key)
+			actual, err := store.Get(scenario.Key)
 			if scenario.expErr != nil {
 				if err == nil {
 					t.Errorf("expected error %v, but got %v instead\n", scenario.expErr, err)
@@ -104,23 +104,23 @@ func TestKVStore_Get(t *testing.T) {
 func TestKVStore_Delete(t *testing.T) {
 	scenarios := []struct {
 		name   string
-		key    string
+		Key    string
 		expErr error
 	}{
-		{"new key",
-			"new key",
+		{"new Key",
+			"new Key",
 			nil,
 		},
 		{
-			"old key",
-			"old key",
+			"old Key",
+			"old Key",
 			nil,
 		},
 	}
 
 	for _, scenario := range scenarios {
 		t.Run(scenario.name, func(t *testing.T) {
-			err := store.Delete(scenario.key)
+			err := store.Delete(scenario.Key)
 			if scenario.expErr != nil {
 				if err == nil {
 					t.Errorf("expected error %v, but got %v instead\n", scenario.expErr, err)

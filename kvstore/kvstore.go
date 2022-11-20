@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	ErrKeyNotExist = errors.New("key does not exist")
+	ErrKeyNotExist = errors.New("Key does not exist")
 )
 
 type KVStore struct {
@@ -19,26 +19,26 @@ func NewKVStore() *KVStore {
 	return &s
 }
 
-func (s *KVStore) Put(key, value string) error {
+func (s *KVStore) Put(Key, value string) error {
 	s.Lock()
 	defer s.Unlock()
-	s.s[key] = value
+	s.s[Key] = value
 	return nil
 }
 
-func (s *KVStore) Get(key string) (string, error) {
+func (s *KVStore) Get(Key string) (string, error) {
 	s.RLock()
 	defer s.RUnlock()
-	val, ok := s.s[key]
+	val, ok := s.s[Key]
 	if !ok {
 		return "", ErrKeyNotExist
 	}
 	return val, nil
 }
 
-func (s *KVStore) Delete(key string) error {
+func (s *KVStore) Delete(Key string) error {
 	s.Lock()
 	defer s.Unlock()
-	delete(s.s, key)
+	delete(s.s, Key)
 	return nil
 }

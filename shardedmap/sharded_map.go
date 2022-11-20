@@ -26,22 +26,22 @@ func NewShardedMap(nShards int) ShardedMap {
 	return shardedMap
 }
 
-func (s ShardedMap) Get(key string) interface{} {
-	shard := s.getShard(key)
+func (s ShardedMap) Get(Key string) interface{} {
+	shard := s.getShard(Key)
 	shard.RLock()
 	defer shard.RUnlock()
-	val, ok := shard.m[key]
+	val, ok := shard.m[Key]
 	if !ok {
 		return nil
 	}
 	return val
 }
 
-func (s ShardedMap) Set(key string, val interface{}) {
-	shard := s.getShard(key)
+func (s ShardedMap) Set(Key string, val interface{}) {
+	shard := s.getShard(Key)
 	shard.Lock()
 	defer shard.Unlock()
-	shard.m[key] = val
+	shard.m[Key] = val
 }
 
 func (s ShardedMap) Keys() []string {
@@ -67,13 +67,13 @@ func (s ShardedMap) Keys() []string {
 	return keys
 }
 
-func (s ShardedMap) getShardIndex(key string) int {
-	chkSum := sha1.Sum([]byte(key))
+func (s ShardedMap) getShardIndex(Key string) int {
+	chkSum := sha1.Sum([]byte(Key))
 	hash := int(chkSum[17])
 	return hash % len(s)
 }
 
-func (s ShardedMap) getShard(key string) *shard {
-	idx := s.getShardIndex(key)
+func (s ShardedMap) getShard(Key string) *shard {
+	idx := s.getShardIndex(Key)
 	return s[idx]
 }

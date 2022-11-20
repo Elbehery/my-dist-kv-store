@@ -9,9 +9,9 @@ import (
 
 func main() {
 	r := mux.NewRouter()
-	r.HandleFunc("/v1/{key}", handlers.KeyValuePutHandler).Methods("PUT")
-	r.HandleFunc("/v1/{key}", handlers.KeyValueGetHandler).Methods("GET")
-	r.HandleFunc("/v1/{key}", handlers.KeyValueDeleteHandler).Methods("DELETE")
+	r.HandleFunc("/v1/{Key}", handlers.KeyValuePutHandler).Methods("PUT")
+	r.HandleFunc("/v1/{Key}", handlers.KeyValueGetHandler).Methods("GET")
+	r.HandleFunc("/v1/{Key}", handlers.KeyValueDeleteHandler).Methods("DELETE")
 
-	log.Fatal(http.ListenAndServe(":9400", r))
+	log.Fatal(http.ListenAndServe(":54500", r))
 }
