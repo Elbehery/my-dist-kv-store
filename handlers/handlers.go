@@ -28,7 +28,8 @@ func init() {
 }
 
 func initTransactionLog() error {
-	logger, err := log.NewFileTransactionLogger(LogFileName)
+	var err error
+	logger, err = log.NewFileTransactionLogger(LogFileName)
 	if err != nil {
 		return fmt.Errorf("error init transactions log: %w", err)
 	}

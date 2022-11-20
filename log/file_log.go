@@ -3,6 +3,7 @@ package log
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 )
 
@@ -75,9 +76,16 @@ func (l *FileTransactionLogger) ReadEvents() (<-chan Event, <-chan error) {
 	go func() {
 		var e Event
 
+		defer close(outEvents)
+		defer close(outErrors)
+
 		for scanner.Scan() {
 			line := scanner.Text()
 			if _, err := fmt.Sscanf(line, "%d\t%d\t%s\t%s", &e.Sequence, &e.EventType, &e.Key, &e.Value); err != nil {
+				if err == io.EOF {
+					return
+				}
+
 				outErrors <- fmt.Errorf("input parse error: %w", err)
 				return
 			}
@@ -105,8 +113,6 @@ func NewFileTransactionLogger(fileName string) (TransactionLogger, error) {
 	}
 
 	return &FileTransactionLogger{
-		file:         f,
-		events: make(chan Event),
-		errors: make(chan error),
+		file: f,
 	}, nil
 }
