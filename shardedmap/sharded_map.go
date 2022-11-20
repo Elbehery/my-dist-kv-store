@@ -5,25 +5,25 @@ import (
 	"sync"
 )
 
-type Shard struct {
+type shard struct {
 	sync.RWMutex
 	m map[string]interface{}
 }
 
-type ShardedMap []*Shard
+type ShardedMap []*shard
 
-func NewShardedMap(shards int) ShardedMap {
-	smap := make([]*Shard, 0, shards)
+func NewShardedMap(nShards int) ShardedMap {
+	shardedMap := make([]*shard, 0, nShards)
 	i := 0
-	for i < shards {
-		s := &Shard{
+	for i < nShards {
+		s := &shard{
 			RWMutex: sync.RWMutex{},
 			m:       map[string]interface{}{},
 		}
-		smap = append(smap, s)
+		shardedMap = append(shardedMap, s)
 		i++
 	}
-	return smap
+	return shardedMap
 }
 
 func (s ShardedMap) Get(key string) interface{} {
@@ -45,13 +45,13 @@ func (s ShardedMap) Set(key string, val interface{}) {
 }
 
 func (s ShardedMap) Keys() []string {
-	keys := []string{}
+	keys := make([]string, 0)
 	mux := sync.Mutex{}
 	wg := sync.WaitGroup{}
 
 	wg.Add(len(s))
-	for _, shard := range s {
-		go func(s *Shard) {
+	for _, sh := range s {
+		go func(s *shard) {
 			defer wg.Done()
 			s.RLock()
 			defer s.RUnlock()
@@ -60,19 +60,20 @@ func (s ShardedMap) Keys() []string {
 				keys = append(keys, k)
 				mux.Unlock()
 			}
-		}(shard)
+		}(sh)
 	}
-
 	wg.Wait()
+
 	return keys
 }
+
 func (s ShardedMap) getShardIndex(key string) int {
-	chksum := sha1.Sum([]byte(key))
-	hash := int(chksum[17])
+	chkSum := sha1.Sum([]byte(key))
+	hash := int(chkSum[17])
 	return hash % len(s)
 }
 
-func (s ShardedMap) getShard(key string) *Shard {
+func (s ShardedMap) getShard(key string) *shard {
 	idx := s.getShardIndex(key)
 	return s[idx]
 }
