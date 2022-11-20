@@ -7,7 +7,7 @@ import (
 
 type shard struct {
 	sync.RWMutex
-	m map[string]interface{}
+	m map[string]string
 }
 
 type ShardedMap []*shard
@@ -18,7 +18,7 @@ func NewShardedMap(nShards int) ShardedMap {
 	for i < nShards {
 		s := &shard{
 			RWMutex: sync.RWMutex{},
-			m:       map[string]interface{}{},
+			m:       map[string]string{},
 		}
 		shardedMap = append(shardedMap, s)
 		i++
@@ -26,18 +26,18 @@ func NewShardedMap(nShards int) ShardedMap {
 	return shardedMap
 }
 
-func (s ShardedMap) Get(Key string) interface{} {
+func (s ShardedMap) Get(Key string) string {
 	shard := s.getShard(Key)
 	shard.RLock()
 	defer shard.RUnlock()
 	val, ok := shard.m[Key]
 	if !ok {
-		return nil
+		return ""
 	}
 	return val
 }
 
-func (s ShardedMap) Set(Key string, val interface{}) {
+func (s ShardedMap) Set(Key string, val string) {
 	shard := s.getShard(Key)
 	shard.Lock()
 	defer shard.Unlock()

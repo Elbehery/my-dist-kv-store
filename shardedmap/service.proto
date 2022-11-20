@@ -1,0 +1,24 @@
+syntax = "proto3";
+package sharded_map;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "/grpc-kv-store";
+
+message GetRequest {
+  string key = 1;
+}
+
+message GetResponse {
+  string value = 1;
+}
+
+message PutRequest{
+  string key = 1;
+  string value = 2;
+}
+
+service KeyValueStore {
+  rpc Get(GetRequest) returns (GetResponse);
+  rpc Put(PutRequest) returns (google.protobuf.Empty);
+}
