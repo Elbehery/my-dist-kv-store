@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-var store KVStore
+var store *KVStore
 
 func TestMain(m *testing.M) {
 	err := setup()
@@ -139,13 +139,12 @@ func TestKVStore_Delete(t *testing.T) {
 
 func setup() error {
 	store = NewKVStore()
-	store["A"] = "1"
-	store["B"] = "2"
-	store["C"] = "3"
+	store.s["A"] = "1"
+	store.s["B"] = "2"
+	store.s["C"] = "3"
 	return nil
 }
 
-func tearDown() error {
+func tearDown() {
 	store = nil
-	return nil
 }

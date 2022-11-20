@@ -8,7 +8,7 @@ import (
 	"playground/my-dist-kv-store/kvstore"
 )
 
-var store kvstore.KVStore
+var store *kvstore.KVStore
 
 func init() {
 	store = kvstore.NewKVStore()
