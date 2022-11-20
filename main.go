@@ -1,21 +1,17 @@
 package main
 
 import (
-	"fmt"
-	"playground/my-dist-kv-store/shardedmap"
+	"github.com/gorilla/mux"
+	"log"
+	"net/http"
+	"playground/my-dist-kv-store/handlers"
 )
 
 func main() {
+	r := mux.NewRouter()
+	r.HandleFunc("/v1/{key}", handlers.KeyValuePutHandler).Methods("PUT")
+	r.HandleFunc("/v1/{key}", handlers.KeyValueGetHandler).Methods("GET")
+	r.HandleFunc("/v1/{key}", handlers.KeyValueDeleteHandler).Methods("DELETE")
 
-	shardedMap := shardedmap.NewShardedMap(5)
-	shardedMap.Set("alpha", 1)
-	shardedMap.Set("beta", 2)
-	shardedMap.Set("gamma", 3)
-	fmt.Println(shardedMap.Get("alpha"))
-	fmt.Println(shardedMap.Get("beta"))
-	fmt.Println(shardedMap.Get("gamma"))
-	keys := shardedMap.Keys()
-	for _, k := range keys {
-		fmt.Println(k)
-	}
+	log.Fatal(http.ListenAndServe(":9400", r))
 }
